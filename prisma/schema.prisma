@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+//
+model Links {
+  id          Int      @id @default(autoincrement())
+  longUrl     String
+  key         String   @unique
+  totalClicks Int      @default(0)
+  createdAt   DateTime @default(now())
+  clicks      Clicks[]
+}
+
+model Clicks {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  ip        String
+  country   String
+  city      String
+  userAgent String
+
+  // Связь с таблицей Links
+  link    Links @relation(fields: [linksId], references: [id])
+  linksId Int
+}
